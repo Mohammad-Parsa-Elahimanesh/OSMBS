@@ -1,3 +1,7 @@
+package network.server;
+
+import logic.Manager;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,7 +12,7 @@ public class ConnectionBuilder extends Thread {
 
     public void run() {
         try {
-            serverSocket = new ServerSocket(Manager.serverPort);
+            serverSocket = new ServerSocket(Manager.SERVER_PORT);
             chatCenter.start();
             while (true) {
                 Socket socket = serverSocket.accept();

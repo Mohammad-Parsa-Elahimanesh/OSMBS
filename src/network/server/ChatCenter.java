@@ -1,3 +1,5 @@
+package network.server;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,14 +36,5 @@ public class ChatCenter extends Thread {
                 onlineConnections.remove(c);
             oldConnections.clear();
         }
-    }
-
-    Chat getChat(String name) {
-        for (Map.Entry<Connection, Chat> E : onlineConnections.entrySet())
-            if (E.getKey().user.name.equals(name))
-                return E.getValue();
-        for (Map.Entry<Connection, Chat> E : onlineConnections.entrySet())
-            System.out.println(E.getKey().user.name);
-        return null;
     }
 }
