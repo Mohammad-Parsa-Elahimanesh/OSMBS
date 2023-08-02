@@ -1,5 +1,6 @@
 package network.request;
 
+import logic.Record;
 import logic.User;
 import network.server.Connection;
 
@@ -50,5 +51,36 @@ public class Request {
             connection.send(SignInStatus.SPACE_IN_TEXT);
         else
             signIn(tokens[0], tokens[1]);
+    }
+    public void updateOfflineCoins(int coins) {
+        connection.user.offlineCoins += coins;
+    }
+    public void updateRecords(String text) {
+        text = text.trim();
+        String[] parts = text.split(" ");
+        int[] intParts = new int[parts.length];
+        for(int i = 0; i < parts.length; i++)
+            intParts[i] = Integer.parseInt(parts[i]);
+        int count = intParts[0];
+        for(int i = 0; i < count; i++) {
+            Record gameRecord = new Record();
+            gameRecord.score = intParts[i*3+1];
+            gameRecord.wholeTime = intParts[i*3+2];
+            gameRecord.killedEnemies = intParts[i*3+3];
+            if(!connection.user.records.contains(gameRecord))
+                connection.user.records.add(gameRecord);
+        }
+
+    }
+    public void coins() {
+        connection.send(connection.user.offlineCoins);
+        connection.user.offlineCoins = 0;
+    }
+    public void records() {
+        StringBuilder res = new StringBuilder();
+        res.append(connection.user.records.size());
+        for(Record gameRecord : connection.user.records)
+            res.append(' ').append(gameRecord.score).append(' ').append((int)gameRecord.wholeTime).append(' ').append(gameRecord.killedEnemies);
+        connection.send(res.toString());
     }
 }

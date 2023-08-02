@@ -29,8 +29,11 @@ public class Chat extends Thread {
              case USERS -> connection.request.users();
              case SIGN_UP -> connection.request.signUp(connection.scanner.nextLine());
              case SIGN_IN -> connection.request.signIn(connection.scanner.nextLine());
-             case UPDATE_USER -> {}// TODO;
              case SIGN_OUT -> connection.user = null;
+             case UPDATE_OFFLINE_COINS -> connection.request.updateOfflineCoins(connection.scanner.nextInt());
+             case UPDATE_RECORDS -> connection.request.updateRecords(connection.scanner.nextLine());
+             case COINS -> connection.request.coins();
+             case RECORDS -> connection.request.records();
              case CLOSE -> running = false;
          }
     }

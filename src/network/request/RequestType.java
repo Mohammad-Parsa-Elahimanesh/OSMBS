@@ -5,7 +5,9 @@ public enum RequestType {
     SIGN_UP,
     SIGN_IN,
     SIGN_OUT,
-    UPDATE_USER,
+    UPDATE_OFFLINE_COINS,
+    UPDATE_RECORDS,
+    COINS,
+    RECORDS,
     CLOSE,
 }
-
