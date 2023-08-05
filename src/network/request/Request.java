@@ -1,8 +1,16 @@
 package network.request;
 
+import logic.GameMode;
 import logic.Record;
+import logic.SMS;
 import logic.User;
+import logic.room.AccessLevel;
+import logic.room.Room;
+import logic.room.RoomState;
 import network.server.Connection;
+
+import java.util.List;
+import java.util.Map;
 
 public class Request {
     final Connection connection;
@@ -13,7 +21,10 @@ public class Request {
             result.append(" ").append(user.name).append(" ").append(user.password);
         connection.send(result);
     }
-    public void signUp(String username, String password) {
+    public void friends() {
+        connection.send(connection.user.friends);
+    }
+    private void signUp(String username, String password) {
         for(User user: User.getUsers())
             if(user.name.equals(username))
             {
@@ -31,7 +42,7 @@ public class Request {
         else
             signUp(tokens[0], tokens[1]);
     }
-    public void signIn(String username, String password) {
+    private void signIn(String username, String password) {
         for(User user: User.getUsers()) {
             if(user.name.equals(username)) {
                 if(user.password == password.hashCode()) {
@@ -83,4 +94,98 @@ public class Request {
             res.append(' ').append(gameRecord.score).append(' ').append((int)gameRecord.wholeTime).append(' ').append(gameRecord.killedEnemies);
         connection.send(res.toString());
     }
+    public void makeRoom(String text) {
+        String[] parts = text.trim().split(" ");
+        if(Room.getUserRoom(connection.user) == null) {
+            if(parts.length == 1)
+                new Room(connection.user, "", GameMode.valueOf(parts[0]));
+            else if(parts.length == 2)
+                new Room(connection.user, parts[1], GameMode.valueOf(parts[0]));
+        }
+    }
+    public void kick(String text) {
+        User user = User.find(text.trim());
+        Room room = Room.getUserRoom(connection.user);
+        if(user == null || room == null || Room.getUserRoom(user) != room)
+            return;
+        AccessLevel kicker = room.getAccessLevel(connection.user);
+        AccessLevel toKicked = room.getAccessLevel(user);
+        if(kicker == AccessLevel.BOSS || (kicker == AccessLevel.MANAGER && toKicked == AccessLevel.USER))
+            room.kick(user);
+    }
+    public void changeRoleToGamer() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null)
+            room.changeRoleToGamer(connection.user);
+    }
+    public void changeRoleToWatcher() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null)
+            room.changeRoleToWatcher(connection.user);
+    }
+    public void kicked() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null)
+            connection.send(listUsersNamesToString(room.kicked));
+    }
+    public void roomGamers() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null)
+            connection.send(mapUsersAccessToString(room.gamers));
+    }
+    public void roomWatchers() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null)
+            connection.send(mapUsersAccessToString(room.watchers));
+    }
+    public void roomChats() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null)
+            connection.send(chatsToString(room.chats));
+    }
+    public void roomState() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null)
+            connection.send(room.state);
+    }
+    public void openRoom() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null && room.getAccessLevel(connection.user) == AccessLevel.BOSS && room.state == RoomState.CLOSE)
+            room.open();
+    }
+    public void closeRoom() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null && room.getAccessLevel(connection.user) == AccessLevel.BOSS && room.state == RoomState.OPEN)
+            room.close();
+    }
+    public void setManager(String name) {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null && room.getAccessLevel(connection.user) != AccessLevel.USER)
+            room.setManager(User.find(name));
+    }
+
+
+
+
+    private String chatsToString(List<SMS> chat) {
+        StringBuilder rs = new StringBuilder(chat.size()+"");
+        for(SMS sms: chat)
+            rs.append(" ").append(sms.user.name).append(" ").append(SMS.makeInLine(sms.text));
+        return rs.toString();
+    }
+    private String listUsersNamesToString(List<User> users) {
+        StringBuilder rs = new StringBuilder(users.size()+"");
+        for(User user: users)
+            rs.append(" ").append(user.name);
+        return rs.toString();
+    }
+    private String mapUsersAccessToString(Map<User, AccessLevel> map) {
+        StringBuilder rs = new StringBuilder(map.size()+"");
+        for(Map.Entry<User, AccessLevel> e: map.entrySet())
+            rs.append(" ").append(e.getKey().name).append(" ").append(e.getValue());
+        return rs.toString();
+    }
+
+
+    // FIXME: connection user can be null
 }

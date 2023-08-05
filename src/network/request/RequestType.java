@@ -2,6 +2,7 @@ package network.request;
 
 public enum RequestType {
     USERS,
+    FRIENDS,
     SIGN_UP,
     SIGN_IN,
     SIGN_OUT,
@@ -10,4 +11,21 @@ public enum RequestType {
     COINS,
     RECORDS,
     CLOSE,
+
+    MAKE_ROOM,
+    ROOM_MASSAGE,
+    TO_BE_FRIEND,
+    CHANGE_ROLE_TO_GAMER,
+    CHANGE_ROLE_TO_WATCHER,
+    LEAVE_ROOM,
+    SAY_READY,
+    KICK,
+    OPEN_ROOM,
+    CLOSE_ROOM,
+    SET_MANAGER,
+    ROOM_CHATS,
+    ROOM_WATCHERS,
+    ROOM_GAMERS,
+    KICKED,
+    ROOM_STATE,
 }

@@ -27,6 +27,7 @@ public class Chat extends Thread {
          RequestType requestType = RequestType.valueOf(connection.scanner.next());
          switch (requestType) {
              case USERS -> connection.request.users();
+             case FRIENDS -> connection.request.friends();
              case SIGN_UP -> connection.request.signUp(connection.scanner.nextLine());
              case SIGN_IN -> connection.request.signIn(connection.scanner.nextLine());
              case SIGN_OUT -> connection.user = null;
@@ -35,13 +36,20 @@ public class Chat extends Thread {
              case COINS -> connection.request.coins();
              case RECORDS -> connection.request.records();
              case CLOSE -> running = false;
+
+             case MAKE_ROOM -> connection.request.makeRoom(connection.scanner.nextLine());
+             case KICK -> connection.request.kick(connection.scanner.nextLine());
+             case CHANGE_ROLE_TO_GAMER -> connection.request.changeRoleToGamer();
+             case CHANGE_ROLE_TO_WATCHER -> connection.request.changeRoleToWatcher();
+             case KICKED -> connection.request.kicked();
+             case ROOM_CHATS -> connection.request.roomChats();
+             case ROOM_GAMERS -> connection.request.roomGamers();
+             case ROOM_WATCHERS -> connection.request.roomWatchers();
+             case ROOM_STATE -> connection.request.roomState();
+             case OPEN_ROOM -> connection.request.openRoom();
+             case CLOSE_ROOM -> connection.request.closeRoom();
+             case SET_MANAGER -> connection.request.setManager(connection.scanner.next());
          }
     }
 
-    void send(String data) {
-        if (connection.printer == null)
-            return;
-        connection.printer.println(data);
-        connection.printer.flush();
-    }
 }
