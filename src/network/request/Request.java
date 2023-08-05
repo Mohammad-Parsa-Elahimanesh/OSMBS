@@ -23,7 +23,7 @@ public class Request {
         connection.send(result);
     }
     public void friends() {
-        connection.send(connection.user.friends);
+        connection.send(listUsersNamesToString(connection.user.friends));
     }
     private void signUp(String username, String password) {
         for(User user: User.getUsers())
