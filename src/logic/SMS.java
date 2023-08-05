@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SMS {
-    static final String SPACE = "!%#$@";
+    static final String SPACE = "!%#$";
     static final String LINE = "*%^&%*";
     static final Map<User, Color> senderColor = new HashMap<>();
     static final Color[] colors = {Color.green, Color.blue, Color.yellow, Color.red, Color.black};

@@ -9,6 +9,7 @@ import logic.room.Room;
 import logic.room.RoomState;
 import network.server.Connection;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -94,6 +95,20 @@ public class Request {
             res.append(' ').append(gameRecord.score).append(' ').append((int)gameRecord.wholeTime).append(' ').append(gameRecord.killedEnemies);
         connection.send(res.toString());
     }
+
+    public void rooms(String modeName) {
+        GameMode mode = GameMode.valueOf(modeName);
+        List<Room> rooms = new ArrayList<>();
+        for(Room room: Room.allRooms)
+            if(room.state == RoomState.OPEN && room.mode == mode)
+                rooms.add(room);
+        StringBuilder rs = new StringBuilder();
+        rs.append(rooms.size());
+        for(Room room: rooms)
+            rs.append(' ').append(room.creator.name).append(' ').append(room.password == null?'N':'Y');
+        connection.send(rs);
+    }
+
     public void makeRoom(String text) {
         String[] parts = text.trim().split(" ");
         if(Room.getUserRoom(connection.user) == null) {
@@ -102,6 +117,30 @@ public class Request {
             else if(parts.length == 2)
                 new Room(connection.user, parts[1], GameMode.valueOf(parts[0]));
         }
+    }
+    public void enterRoom(String creator, String password) {
+        User user = User.find(creator);
+        if(user == null) {
+            connection.send(EnterRoomStatus.INVALID_ROOM);
+            return;
+        }
+        Room room = Room.getUserRoom(user);
+        if(room == null) {
+            connection.send(EnterRoomStatus.INVALID_ROOM);
+            return;
+        }
+        if(room.state != RoomState.OPEN) {
+            connection.send(EnterRoomStatus.INACTIVE_ROOM);
+            return;
+        }
+        password = password.replace(" ", "");
+        if(room.password != null && !room.password.equals(password))
+        {
+            connection.send(EnterRoomStatus.INCORRECT_PASSWORD);
+            return;
+        }
+        connection.send(EnterRoomStatus.SUCCESS);
+        room.add(connection.user);
     }
     public void kick(String text) {
         User user = User.find(text.trim());
@@ -141,8 +180,9 @@ public class Request {
     public void roomChats() {
         Room room = Room.getUserRoom(connection.user);
         if(room != null)
-            connection.send(chatsToString(room.chats));
+            connection.send(chatsToString(filter(room.chats, connection.user)));
     }
+
     public void roomState() {
         Room room = Room.getUserRoom(connection.user);
         if(room != null)
@@ -163,9 +203,51 @@ public class Request {
         if(room != null && room.getAccessLevel(connection.user) != AccessLevel.USER)
             room.setManager(User.find(name));
     }
+    public void sayReady() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null && room.state == RoomState.CLOSE)
+            room.sayReady(connection.user);
+    }
+    public void sayUnready() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null && room.state == RoomState.CLOSE)
+            room.sayUnready(connection.user);
+    }
+    public void leaveRoom() {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null)
+            room.leave(connection.user);
+    }
+    public void toBeFriend(String name) {
+        Room room = Room.getUserRoom(connection.user);
+        User toBeFriend = User.find(name);
+        if(room != null && room == Room.getUserRoom(toBeFriend) && toBeFriend != null) {
+            toBeFriend.invitedFrom = connection.user;
+            if(connection.user.invitedFrom == toBeFriend) {
+                toBeFriend.invitedFrom = connection.user.invitedFrom = null;
+                toBeFriend.friends.add(connection.user);
+                connection.user.friends.add(toBeFriend);
+            }
+        }
+    }
+    public void friendRequest() {
+        connection.send(connection.user.invitedFrom);
+    }
+    public void roomMassage(String text) {
+        Room room = Room.getUserRoom(connection.user);
+        if(room != null)
+            room.chats.add(new SMS(connection.user, SMS.makeRegular(text)));
+    }
 
 
 
+    private List<SMS> filter(List<SMS> chats, User user) {
+        List<SMS> filtered = new ArrayList<>();
+        for(SMS msg : chats)
+            if(!msg.text.contains("@") || msg.text.contains("@" + user.name) || user == msg.user)
+                filtered.add(msg);
+        return filtered;
+    }
 
     private String chatsToString(List<SMS> chat) {
         StringBuilder rs = new StringBuilder(chat.size()+"");

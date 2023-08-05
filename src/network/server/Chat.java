@@ -37,7 +37,10 @@ public class Chat extends Thread {
              case RECORDS -> connection.request.records();
              case CLOSE -> running = false;
 
+
+             case ROOMS -> connection.request.rooms(connection.scanner.next());
              case MAKE_ROOM -> connection.request.makeRoom(connection.scanner.nextLine());
+             case ENTER_ROOM -> connection.request.enterRoom(connection.scanner.next(), connection.scanner.nextLine());
              case KICK -> connection.request.kick(connection.scanner.nextLine());
              case CHANGE_ROLE_TO_GAMER -> connection.request.changeRoleToGamer();
              case CHANGE_ROLE_TO_WATCHER -> connection.request.changeRoleToWatcher();
@@ -49,6 +52,12 @@ public class Chat extends Thread {
              case OPEN_ROOM -> connection.request.openRoom();
              case CLOSE_ROOM -> connection.request.closeRoom();
              case SET_MANAGER -> connection.request.setManager(connection.scanner.next());
+             case SAY_READY -> connection.request.sayReady();
+             case SAY_UNREADY -> connection.request.sayUnready();
+             case LEAVE_ROOM -> connection.request.leaveRoom();
+             case TO_BE_FRIEND -> connection.request.toBeFriend(connection.scanner.next());
+             case FRIEND_INVITATION -> connection.request.friendRequest();
+             case ROOM_MASSAGE -> connection.request.roomMassage(connection.scanner.next());
          }
     }
 

@@ -10,6 +10,7 @@ public class User {
     public final String name;
     public final int password;
     public int offlineCoins = 0;
+    public User invitedFrom;
 
     public User(String name, String password) {
         this.name = name;

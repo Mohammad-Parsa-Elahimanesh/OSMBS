@@ -4,4 +4,5 @@ public enum RoomState {
     OPEN,
     CLOSE,
     PLAYING,
+    FINISHED
 }

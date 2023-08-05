@@ -4,37 +4,39 @@ import logic.GameMode;
 import logic.SMS;
 import logic.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Room {
-    static final List<Room> allRunningRooms = new ArrayList<>();
+    public static final List<Room> allRooms = new ArrayList<>();
     static final double DELAY =  1;
-    final User creator;
+    public final User creator;
     public final Map<User, AccessLevel> gamers = new HashMap<>();
     public final Map<User, AccessLevel> watchers = new HashMap<>();
-    public List<User> kicked = new ArrayList<>();
-    public List<SMS> chats = new ArrayList<>();
+    public final List<User> kicked = new ArrayList<>();
+    public final List<SMS> chats = new ArrayList<>();
     public RoomState state = RoomState.OPEN;
-    final String password;
-    final GameMode mode;
+    double allReadyTime = 0;
+    public final List<User> ready = new ArrayList<>();
+    public final String password;
+    public final GameMode mode;
 
     public Room(User creator, String password, GameMode mode) {
         this.creator = creator;
         this.password = (password.length() == 0?null:password);
         this.mode = mode;
         gamers.put(creator, AccessLevel.BOSS);
-        allRunningRooms.add(this);
+        allRooms.add(this);
     }
     public static Room getUserRoom(User user) {
-        for (Room room : allRunningRooms)
-            if(room.gamers.containsKey(user) || room.watchers.containsKey(user))
+        for (Room room : allRooms)
+            if(room.state != RoomState.FINISHED && (room.gamers.containsKey(user) || room.watchers.containsKey(user)))
                 return room;
         return null;
     }
-
+    public void add(User user) {
+        if(!watchers.containsKey(user))
+            gamers.put(user, AccessLevel.USER);
+    }
     public AccessLevel getAccessLevel(User user) {
         return gamers.getOrDefault(user, watchers.getOrDefault(user, null));
     }
@@ -62,11 +64,24 @@ public class Room {
         }
     }
     public void open() {
-        // TODO
+        ready.clear();
+        state = RoomState.OPEN;
     }
     public void close() {
-        // TODO
+        state = RoomState.CLOSE;
     }
-    // TODO remove Room after ends from list
-
+    public void sayReady(User user) {
+        if(!ready.contains(user))
+            ready.add(user);
+    }
+    public void sayUnready(User user) {
+        ready.remove(user);
+    }
+    public void leave(User user) {
+        if(user == creator)
+            state = RoomState.FINISHED;
+        watchers.remove(user);
+        gamers.remove(user);
+    }
+    // TODO 30 seconds after all body ready game must be started
 }
