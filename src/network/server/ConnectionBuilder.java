@@ -1,6 +1,6 @@
 package network.server;
 
-import logic.Manager;
+import logic.manager.Manager;
 
 import java.io.IOException;
 import java.net.ServerSocket;

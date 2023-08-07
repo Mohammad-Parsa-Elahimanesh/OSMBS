@@ -59,6 +59,10 @@ public class Chat extends Thread {
             case ROOM_MASSAGE -> connection.request.roomMassage(connection.scanner.next());
             case GET_MASSAGES -> connection.request.getMassages(connection.scanner.next());
             case SEND_MASSAGE -> connection.request.sendMassage(connection.scanner.next(), connection.scanner.next());
+            case BLOCK -> connection.request.block(connection.scanner.next());
+            case UNBLOCK -> connection.request.unblock(connection.scanner.next());
+            case BLOCK_LIST -> connection.request.blockList();
+            case BLOCKER_LIST -> connection.request.blockerList();
         }
     }
 

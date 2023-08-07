@@ -280,8 +280,34 @@ public class Request {
 
     public void sendMassage(String receiverS, String text) {
         User receiver = User.find(receiverS);
-        if (receiver == null || !connection.user.friends.contains(receiver)) return;
+        if (receiver == null || !connection.user.friends.contains(receiver)
+                || BlockManager.isBlocked(receiver, connection.user) || BlockManager.isBlocked(connection.user, receiver))
+            return;
         PvChats.send(connection.user, receiver, SMS.makeRegular(text));
+    }
+
+    public void block(String name) {
+        BlockManager.block(connection.user, User.find(name));
+    }
+
+    public void unblock(String name) {
+        BlockManager.unblock(connection.user, User.find(name));
+    }
+
+    public void blockList() {
+        List<User> blockedFriends = new ArrayList<>();
+        for (User friend : connection.user.friends)
+            if (BlockManager.isBlocked(connection.user, friend))
+                blockedFriends.add(friend);
+        connection.send(listUsersNamesToString(blockedFriends));
+    }
+
+    public void blockerList() {
+        List<User> blockerFriends = new ArrayList<>();
+        for (User friend : connection.user.friends)
+            if (BlockManager.isBlocked(friend, connection.user))
+                blockerFriends.add(friend);
+        connection.send(listUsersNamesToString(blockerFriends));
     }
 
 

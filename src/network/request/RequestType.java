@@ -35,4 +35,8 @@ public enum RequestType {
 
     SEND_MASSAGE,
     GET_MASSAGES,
+    BLOCK,
+    UNBLOCK,
+    BLOCK_LIST,
+    BLOCKER_LIST,
 }
