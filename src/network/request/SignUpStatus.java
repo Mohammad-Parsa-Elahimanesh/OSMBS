@@ -1,4 +1,5 @@
 package network.request;
+
 public enum SignUpStatus {
     SUCCESS,
     NON_UNIQUE_USERNAME,

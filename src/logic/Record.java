@@ -11,7 +11,7 @@ public class Record {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Record record1)) return false;
-        return score == record1.score && (int)record1.wholeTime == (int)wholeTime && killedEnemies == record1.killedEnemies;
+        return score == record1.score && (int) record1.wholeTime == (int) wholeTime && killedEnemies == record1.killedEnemies;
     }
 
     @Override

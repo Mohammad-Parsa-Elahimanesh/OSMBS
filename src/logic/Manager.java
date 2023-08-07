@@ -10,6 +10,8 @@ public class Manager {
     public static final int SCREEN_HEIGHT = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     public static final int ROW = 16;
     public static final int SINGLE_BLOCK_HEIGHT = SCREEN_HEIGHT / ROW;
-    private Manager() {}
+
+    private Manager() {
+    }
 
 }
