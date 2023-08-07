@@ -111,7 +111,7 @@ public class Request {
         GameMode mode = GameMode.valueOf(modeName);
         List<Room> rooms = new ArrayList<>();
         for (Room room : Room.allRooms)
-            if (room.state == RoomState.OPEN && room.mode == mode)
+            if (room.state == RoomState.OPEN && room.mode == mode && !room.kicked.contains(connection.user))
                 rooms.add(room);
         StringBuilder rs = new StringBuilder();
         rs.append(rooms.size());
@@ -122,7 +122,8 @@ public class Request {
 
     public void makeRoom(String text) {
         String[] parts = text.trim().split(" ");
-        if (Room.getUserRoom(connection.user) == null) {
+        Room room = Room.getUserRoom(connection.user);
+        if (room == null || room.state == RoomState.FINISHED || room.kicked.contains(connection.user)) {
             if (parts.length == 1)
                 new Room(connection.user, "", GameMode.valueOf(parts[0]));
             else if (parts.length == 2)
@@ -137,7 +138,7 @@ public class Request {
             return;
         }
         Room room = Room.getUserRoom(user);
-        if (room == null) {
+        if (room == null || room.kicked.contains(connection.user)) {
             connection.send(EnterRoomStatus.INVALID_ROOM);
             return;
         }

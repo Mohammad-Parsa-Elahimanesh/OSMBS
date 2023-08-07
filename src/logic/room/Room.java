@@ -38,6 +38,9 @@ public class Room {
         for (Room room : allRooms)
             if (room.gamers.containsKey(user) || room.watchers.containsKey(user))
                 return room;
+        for (Room room : allRooms)
+            if (room.kicked.contains(user))
+                return room;
         return null;
     }
 
@@ -57,9 +60,9 @@ public class Room {
 
     public void kick(User user) {
         synchronized (this) {
-            kicked.add(user);
             gamers.remove(user);
             watchers.remove(user);
+            kicked.add(user);
         }
     }
 
