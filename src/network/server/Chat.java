@@ -58,6 +58,8 @@ public class Chat extends Thread {
              case TO_BE_FRIEND -> connection.request.toBeFriend(connection.scanner.next());
              case FRIEND_INVITATION -> connection.request.friendRequest();
              case ROOM_MASSAGE -> connection.request.roomMassage(connection.scanner.next());
+             case GET_MASSAGES -> connection.request.getMassages(connection.scanner.next());
+             case SEND_MASSAGE -> connection.request.sendMassage(connection.scanner.next(), connection.scanner.next());
          }
     }
 

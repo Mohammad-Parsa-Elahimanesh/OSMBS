@@ -1,17 +1,13 @@
 package network.request;
 
-import logic.GameMode;
+import logic.*;
 import logic.Record;
-import logic.SMS;
-import logic.User;
 import logic.room.AccessLevel;
 import logic.room.Room;
 import logic.room.RoomState;
 import network.server.Connection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Request {
     final Connection connection;
@@ -23,6 +19,7 @@ public class Request {
         connection.send(result);
     }
     public void friends() {
+        connection.user.friends.sort((o1, o2) -> Long.compare(PvChats.lastMassageTime(o1, connection.user), PvChats.lastMassageTime(o2, connection.user)));
         connection.send(listUsersNamesToString(connection.user.friends));
     }
     private void signUp(String username, String password) {
@@ -185,8 +182,8 @@ public class Request {
 
     public void roomState() {
         Room room = Room.getUserRoom(connection.user);
-        if(room != null)
-            connection.send(room.state);
+        assert room != null;
+        connection.send(room.state);
     }
     public void openRoom() {
         Room room = Room.getUserRoom(connection.user);
@@ -238,6 +235,18 @@ public class Request {
         if(room != null)
             room.chats.add(new SMS(connection.user, SMS.makeRegular(text)));
     }
+    public void getMassages(String name) {
+        User user = User.find(name);
+        if(user == null) return;
+        connection.send(chatsToString(PvChats.getMessages(connection.user, user)));
+    }
+    public void sendMassage(String receiverS, String text) {
+        User receiver = User.find(receiverS);
+        if(receiver == null || !connection.user.friends.contains(receiver)) return;
+        PvChats.send(connection.user, receiver, SMS.makeRegular(text));
+    }
+
+
 
 
 

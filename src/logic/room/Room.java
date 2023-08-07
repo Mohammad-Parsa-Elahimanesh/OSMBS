@@ -31,6 +31,9 @@ public class Room {
         for (Room room : allRooms)
             if(room.state != RoomState.FINISHED && (room.gamers.containsKey(user) || room.watchers.containsKey(user)))
                 return room;
+        for (Room room : allRooms)
+            if(room.gamers.containsKey(user) || room.watchers.containsKey(user))
+                return room;
         return null;
     }
     public void add(User user) {

@@ -32,4 +32,7 @@ public enum RequestType {
     ROOM_GAMERS,
     KICKED,
     ROOM_STATE,
+
+    SEND_MASSAGE,
+    GET_MASSAGES,
 }
