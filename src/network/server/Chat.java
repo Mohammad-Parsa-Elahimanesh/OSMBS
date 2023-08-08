@@ -69,6 +69,7 @@ public class Chat extends Thread {
             case GEMS -> connection.request.gems();
             case CONVERT_TO_COINS -> connection.request.convertToCoins(connection.scanner.nextInt());
             case ITEMS -> connection.request.items();
+            case LEVEL -> connection.request.level();
         }
     }
 

@@ -111,6 +111,10 @@ public class Request {
     public void gems() {
         connection.send(connection.user == null?0:connection.user.gems);
     }
+    public void level() {
+        connection.send(connection.user == null?0:connection.user.getLevel());
+    }
+
     public void convertToCoins(int cnt) {
         if(connection.user != null) {
             cnt = Math.min(cnt, connection.user.gems);

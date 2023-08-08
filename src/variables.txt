@@ -1,4 +1,4 @@
-Shop.diamondConversionRate 7
+Shop.diamondConversionRate 22
 Shop.levelMultiplier 0.001
 SpeedPotion.multiplier 1.3
 SpeedPotion.period 10

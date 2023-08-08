@@ -10,7 +10,9 @@ public abstract class Item {
         this.limits = limits;
     }
     public abstract String imageName();
-    public String name() {return imageName().split(".")[0];}
+    public String name() {
+        return imageName().split("\\.")[0];
+    }
     public int neededCoins() {
         for(Limit limit : limits)
             if(limit instanceof Coins coins)

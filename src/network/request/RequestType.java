@@ -47,4 +47,5 @@ public enum RequestType {
     GEMS,
     CONVERT_TO_COINS,
     ITEMS,
+    LEVEL,
 }
