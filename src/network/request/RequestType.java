@@ -43,4 +43,8 @@ public enum RequestType {
     BLOCKER_LIST,
 
     STANDINGS,
+    ONLINE_COINS,
+    GEMS,
+    CONVERT_TO_COINS,
+    ITEMS,
 }

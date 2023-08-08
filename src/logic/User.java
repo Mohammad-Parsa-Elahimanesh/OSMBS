@@ -22,7 +22,10 @@ public class User {
         this.name = name;
         this.password = password.hashCode();
         users.add(this);
-        sumScore = (int)(Math.random()*10000); // FIXME Temporary for test standing
+        sumScore = (int)(Math.random()*10000);
+        gems = (int)(Math.random()*5);
+        onlineCoins = (int)(Math.random()*200);
+        // FIXME Temporary for test
     }
 
     public static List<User> getUsers() {

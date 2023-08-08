@@ -3,9 +3,13 @@ package network.request;
 import logic.Record;
 import logic.*;
 import logic.manager.BlockManager;
+import logic.manager.Constants;
+import logic.manager.Manager;
 import logic.room.AccessLevel;
 import logic.room.Room;
 import logic.room.RoomState;
+import logic.shop.Commodities;
+import logic.shop.Commodity;
 import network.server.Connection;
 
 import java.util.*;
@@ -99,6 +103,30 @@ public class Request {
     public void coins() {
         connection.send(connection.user.offlineCoins);
         connection.user.offlineCoins = 0;
+    }
+
+    public void onlineCoins() {
+        connection.send(connection.user == null?0:connection.user.onlineCoins);
+    }
+    public void gems() {
+        connection.send(connection.user == null?0:connection.user.gems);
+    }
+    public void convertToCoins(int cnt) {
+        if(connection.user != null) {
+            cnt = Math.min(cnt, connection.user.gems);
+            connection.user.gems -= cnt;
+            connection.user.onlineCoins += Manager.constants.get(Constants.SHOP_DIAMONDCONVERSIONRATE)*cnt;
+        }
+    }
+
+    public void items() {
+        StringBuilder rs = new StringBuilder(Commodities.values().length+"");
+        for(Commodities commodities: Commodities.values()) {
+            rs.append(' ').append(commodities).append(' ')
+                    .append(commodities.getCommodity().imageName())
+                    .append(' ').append(commodities.getCommodity().details().replace(" ", "&"));
+        }
+        connection.send(rs);
     }
 
     public void records() {

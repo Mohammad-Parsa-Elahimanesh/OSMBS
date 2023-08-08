@@ -65,6 +65,10 @@ public class Chat extends Thread {
             case BLOCK_LIST -> connection.request.blockList();
             case BLOCKER_LIST -> connection.request.blockerList();
             case STANDINGS -> connection.request.standings();
+            case ONLINE_COINS -> connection.request.onlineCoins();
+            case GEMS -> connection.request.gems();
+            case CONVERT_TO_COINS -> connection.request.convertToCoins(connection.scanner.nextInt());
+            case ITEMS -> connection.request.items();
         }
     }
 
