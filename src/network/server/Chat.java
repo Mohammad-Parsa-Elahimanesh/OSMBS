@@ -64,6 +64,7 @@ public class Chat extends Thread {
             case UNBLOCK -> connection.request.unblock(connection.scanner.next());
             case BLOCK_LIST -> connection.request.blockList();
             case BLOCKER_LIST -> connection.request.blockerList();
+            case STANDINGS -> connection.request.standings();
         }
     }
 

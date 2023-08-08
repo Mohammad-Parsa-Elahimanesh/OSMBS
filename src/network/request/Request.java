@@ -8,9 +8,7 @@ import logic.room.Room;
 import logic.room.RoomState;
 import network.server.Connection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Request {
     final Connection connection;
@@ -323,8 +321,21 @@ public class Request {
                 blockerFriends.add(friend);
         connection.send(listUsersNamesToString(blockerFriends));
     }
+    public void standings() {
+        User[] allUsers = User.getUsers().toArray(new User[0]);
+        Arrays.sort(allUsers, Comparator.comparingInt(a -> -a.sumScore));
+        StringBuilder rs = new StringBuilder(allUsers.length+" ");
+        for (int i = 0; i < allUsers.length; i++) {
+            if(i > 0)
+                rs.append('~');
+            rs.append(fix(i + 1+"", 4)).append(": ").append(fix(allUsers[i].name,50))
+                    .append(allUsers[i].getLevel()).append("              ").append(fix(allUsers[i].sumScore+"",10));
+        }
+        connection.send(rs.toString());
+    }
 
 
+    private String fix(String s, int len) {return s+(" ".repeat(len-s.length()));}
     private List<SMS> filter(List<SMS> chats, User user) {
         List<SMS> filtered = new ArrayList<>();
         for (SMS msg : chats)
@@ -354,6 +365,6 @@ public class Request {
         return rs.toString();
     }
 
-
     // FIXME: connection user can be null
+
 }

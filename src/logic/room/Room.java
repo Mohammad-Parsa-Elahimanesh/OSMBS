@@ -105,5 +105,5 @@ public class Room {
         watchers.remove(user);
         gamers.remove(user);
     }
-    // TODO 30 seconds after all body ready game must be started
+
 }

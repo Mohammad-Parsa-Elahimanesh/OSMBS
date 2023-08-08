@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Manager {
     public static final int SERVER_PORT = 50000;
-    static final Map<Constants, Double> constants = new EnumMap<>(Constants.class);
+    public static final Map<Constants, Double> constants = new EnumMap<>(Constants.class);
 
     private Manager() {
     }

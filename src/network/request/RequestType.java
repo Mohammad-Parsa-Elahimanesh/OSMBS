@@ -41,4 +41,6 @@ public enum RequestType {
     UNBLOCK,
     BLOCK_LIST,
     BLOCKER_LIST,
+
+    STANDINGS,
 }
