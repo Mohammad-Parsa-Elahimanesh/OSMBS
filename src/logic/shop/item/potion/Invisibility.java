@@ -13,6 +13,6 @@ public class Invisibility extends Potion{
     }
     @Override
     public String imageName() {
-        return "invisibility.png";
+        return "invisibilityPotion.png";
     }
 }
