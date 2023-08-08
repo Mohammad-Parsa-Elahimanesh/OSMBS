@@ -10,6 +10,7 @@ import logic.room.Room;
 import logic.room.RoomState;
 import logic.shop.Commodities;
 import logic.shop.Commodity;
+import logic.shop.item.limits.BuyStatus;
 import network.server.Connection;
 
 import java.util.*;
@@ -132,7 +133,14 @@ public class Request {
         }
         connection.send(rs);
     }
-
+    public void buy(String toBuy) {
+        try {
+            Commodities conn = Commodities.valueOf(toBuy);
+            connection.send(conn.getCommodity().sell(connection.user));
+        } catch (IllegalArgumentException e) {
+            connection.send(BuyStatus.INVALID);
+        }
+    }
     public void records() {
         StringBuilder res = new StringBuilder();
         res.append(connection.user.records.size());

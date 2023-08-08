@@ -2,6 +2,7 @@ package logic;
 
 import logic.manager.Constants;
 import logic.manager.Manager;
+import logic.shop.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class User {
     public int offlineCoins = 0;
     public User invitedFrom;
     public final List<User> invited = new ArrayList<>();
+    public final List<Item> items = new ArrayList<>();
     public int sumScore = 0;
     public int onlineCoins = 0;
     public int gems = 0;

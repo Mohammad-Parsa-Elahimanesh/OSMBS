@@ -8,6 +8,7 @@ import logic.shop.item.limits.Gems;
 import logic.shop.item.limits.Limit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Commodity {
@@ -32,6 +33,7 @@ public class Commodity {
         soldTime = System.currentTimeMillis();
         buyer.onlineCoins -= Coins.getSumNeededCoins(this);
         buyer.gems -= Gems.getSumNeededGems(this);
+        buyer.items.addAll(Arrays.asList(items));
         sells.add(this);
         return status;
     }
@@ -43,7 +45,16 @@ public class Commodity {
     }
     public String imageName() {return items[0].imageName();}
     public String details() {
-        StringBuilder rs = new StringBuilder();
+        StringBuilder rs = new StringBuilder("it contains ");
+        for(int i = 0; i < items.length; i++) {
+            rs.append(items[i].name());
+            if(i+1 != items.length)
+                rs.append(", ");
+            else
+                rs.append(".    ");
+        }
+        rs.append("it costs ").append(Coins.getSumNeededCoins(this)).append(" coins and ")
+                .append(Gems.getSumNeededGems(this)).append(" gems.    ");
         for(Item item : items)
             for (Limit limit: item.limits)
                 rs.append(limit.details(item)).append("   ");

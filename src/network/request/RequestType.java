@@ -48,4 +48,5 @@ public enum RequestType {
     CONVERT_TO_COINS,
     ITEMS,
     LEVEL,
+    BUY,
 }

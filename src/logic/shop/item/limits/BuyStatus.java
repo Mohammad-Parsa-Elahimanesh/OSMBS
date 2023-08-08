@@ -8,5 +8,5 @@ public enum BuyStatus {
     NOT_ENOUGH_COINS,
     NOT_ENOUGH_GEMS,
     NOT_ENOUGH_LEVEL,
-
+    INVALID
 }
