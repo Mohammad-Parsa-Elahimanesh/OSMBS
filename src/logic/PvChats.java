@@ -10,7 +10,9 @@ public class PvChats {
     static final Map<String, List<SMS>> massages = new HashMap<>();
 
     private static String hash2Users(User a, User b) {
-        return a.name.compareTo(b.name) < 0 ? a.name + " " + b.name : b.name + " " + a.name;
+        String aName = (a == null) ? " " : a.name;
+        String bName = (b == null) ? " " : b.name;
+        return aName.compareTo(bName) < 0 ? aName + " " + bName : bName + " " + aName;
     }
 
     public static List<SMS> getMessages(User a, User b) {

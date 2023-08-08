@@ -26,8 +26,11 @@ public class Request {
     }
 
     public void friends() {
-        connection.user.friends.sort((o1, o2) -> Long.compare(PvChats.lastMassageTime(o1, connection.user), PvChats.lastMassageTime(o2, connection.user)));
-        connection.send(listUsersNamesToString(connection.user.friends));
+        if(connection.user != null) {
+            connection.user.friends.sort((o1, o2) -> Long.compare(PvChats.lastMassageTime(o2, connection.user), PvChats.lastMassageTime(o1, connection.user)));
+            connection.send(listUsersNamesToString(connection.user.friends));
+        } else
+            connection.send(0);
     }
 
     private void signUp(String username, String password) {
@@ -246,11 +249,10 @@ public class Request {
     public void toBeFriend(String name) {
         Room room = Room.getUserRoom(connection.user);
         User toBeFriend = User.find(name);
-        if (room != null && room == Room.getUserRoom(toBeFriend) && toBeFriend != null) {
+        if (room != null && room == Room.getUserRoom(toBeFriend) && toBeFriend != null && !toBeFriend.friends.contains(connection.user)) {
             toBeFriend.invitedFrom = connection.user;
-            connection.user.invited = toBeFriend;
-            if (connection.user == toBeFriend.invited) {
-                toBeFriend.invited = connection.user.invited = null;
+            connection.user.invited.add(toBeFriend);
+            if (toBeFriend.invited.contains(connection.user)) {
                 toBeFriend.invitedFrom = connection.user.invitedFrom = null;
                 toBeFriend.friends.add(connection.user);
                 connection.user.friends.add(toBeFriend);

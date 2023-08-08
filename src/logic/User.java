@@ -11,7 +11,7 @@ public class User {
     public final int password;
     public int offlineCoins = 0;
     public User invitedFrom;
-    public User invited;
+    public final List<User> invited = new ArrayList<>();
 
     public User(String name, String password) {
         this.name = name;
