@@ -2,6 +2,7 @@ package network.request;
 
 import logic.Record;
 import logic.*;
+import logic.manager.BlockManager;
 import logic.room.AccessLevel;
 import logic.room.Room;
 import logic.room.RoomState;
@@ -161,12 +162,22 @@ public class Request {
     public void kick(String text) {
         User user = User.find(text.trim());
         Room room = Room.getUserRoom(connection.user);
-        if (user == null || room == null || Room.getUserRoom(user) != room)
+        if (user == null || room == null || Room.getUserRoom(user) != room || room.kicked.contains(user))
             return;
         AccessLevel kicker = room.getAccessLevel(connection.user);
         AccessLevel toKicked = room.getAccessLevel(user);
         if (kicker == AccessLevel.BOSS || (kicker == AccessLevel.MANAGER && toKicked == AccessLevel.USER))
             room.kick(user);
+    }
+    public void roomBlock(String name) {
+        User user = User.find(name);
+        Room room = Room.getUserRoom(connection.user);
+        if (user == null || room == null || Room.getUserRoom(user) != room || room.blocked.contains(user))
+            return;
+        AccessLevel blocker = room.getAccessLevel(connection.user);
+        AccessLevel blocked = room.getAccessLevel(user);
+        if (blocker == AccessLevel.BOSS || (blocker == AccessLevel.MANAGER && blocked == AccessLevel.USER))
+            room.blocked.add(user);
     }
 
     public void changeRoleToGamer() {
@@ -272,7 +283,7 @@ public class Request {
     public void roomMassage(String text) {
         Room room = Room.getUserRoom(connection.user);
         if (room != null)
-            room.chats.add(new SMS(connection.user, SMS.makeRegular(text)));
+            room.chats.add(new SMS(connection.user, SMS.makeRegular(text+(room.blocked.contains(connection.user)?"#Blocked":""))));
     }
 
     public void getMassages(String name) {

@@ -1,4 +1,6 @@
-package logic;
+package logic.manager;
+
+import logic.User;
 
 import java.util.HashMap;
 import java.util.Map;

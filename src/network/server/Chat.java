@@ -41,6 +41,7 @@ public class Chat extends Thread {
             case MAKE_ROOM -> connection.request.makeRoom(connection.scanner.nextLine());
             case ENTER_ROOM -> connection.request.enterRoom(connection.scanner.next(), connection.scanner.nextLine());
             case KICK -> connection.request.kick(connection.scanner.nextLine());
+            case ROOM_BLOCK -> connection.request.roomBlock(connection.scanner.next());
             case CHANGE_ROLE_TO_GAMER -> connection.request.changeRoleToGamer();
             case CHANGE_ROLE_TO_WATCHER -> connection.request.changeRoleToWatcher();
             case KICKED -> connection.request.kicked();

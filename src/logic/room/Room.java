@@ -16,6 +16,7 @@ public class Room {
     public final Map<User, AccessLevel> gamers = new HashMap<>();
     public final Map<User, AccessLevel> watchers = new HashMap<>();
     public final List<User> kicked = new ArrayList<>();
+    public final List<User> blocked = new ArrayList<>();
     public final List<SMS> chats = new ArrayList<>();
     public final List<User> ready = new ArrayList<>();
     public final String password;
